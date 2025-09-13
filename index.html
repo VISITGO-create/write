@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Place Your Order</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .order-container {
+      background: #ffffff;
+      max-width: 400px;
+      width: 100%;
+      padding: 20px 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .order-container img {
+      max-width: 150px;
+      margin-bottom: 15px;
+    }
+    h2 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      text-align: left;
+      margin-top: 12px;
+      font-weight: bold;
+      color: #555;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    .payment-method {
+      margin-top: 15px;
+      padding: 10px;
+      background: #f9f9f9;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      font-weight: bold;
+      color: #333;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      background-color: #0077cc;
+      color: #fff;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #005fa3;
+    }
+    .confirmation {
+      display: none;
+      margin-top: 20px;
+      color: #007700;
+      font-weight: bold;
+    }
+    .whatsapp {
+      margin-top: 20px;
+      font-size: 14px;
+    }
+    .whatsapp a {
+      color: #25d366;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    footer {
+      margin-top: 20px;
+      font-size: 12px;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <div class="order-container">
+    <img src="https://i.ibb.co/XxZqVwkY/Screenshot-1-removebg-preview.png" alt="Product Logo" />
+    <h2>Place Your Order</h2>
+    <form id="orderForm">
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" required placeholder="Enter your full name" />
+
+      <label for="mobile">Mobile Number</label>
+      <input 
+        type="tel" 
+        id="mobile" 
+        name="mobile" 
+        pattern="[6-9][0-9]{9}" 
+        required 
+        placeholder="10-digit mobile number (e.g., 9876543210)" 
+        title="Enter a valid 10-digit Indian mobile number starting with 6-9"
+      />
+
+      <label for="address">Address</label>
+      <textarea id="address" name="address" rows="2" required placeholder="Complete address"></textarea>
+
+      <label for="landmark">Landmark</label>
+      <input type="text" id="landmark" name="landmark" placeholder="Nearest landmark" />
+
+      <label for="pincode">Pincode</label>
+      <input 
+        type="text" 
+        id="pincode" 
+        name="pincode" 
+        pattern="[0-9]{6}" 
+        required 
+        placeholder="6-digit pincode" 
+        title="Enter a 6-digit pincode" 
+      />
+
+      <div class="payment-method">💳 Payment Method: <strong>Cash on Delivery</strong></div>
+
+      <button type="submit">Confirm</button>
+    </form>
+
+    <div class="confirmation" id="confirmation">
+      ✅ Your order has been received.<br>
+      You will receive your order in 5 to 7 business days.
+    </div>
+
+    <div class="whatsapp">
+      📞 WhatsApp us for order updates 24×7: 
+      <a href="https://wa.me/message/EZG4ZBTGIN66F1" target="_blank">8088659806</a>
+    </div>
+    <footer>URBANKART</footer>
+  </div>
+
+  <script>
+    const form = document.getElementById('orderForm');
+    const confirmation = document.getElementById('confirmation');
+    const scriptURL = "https://script.google.com/macros/s/AKfycbzJ7YmD6ATooUsA1jLHuMMsCXjmhQXdBW31g7shV8lJbSKN_iMYJG8Q6AHOeo3gMmiS/exec";
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      const data = {
+        name: form.name.value.trim(),
+        mobile: form.mobile.value.trim(),
+        address: form.address.value.trim(),
+        landmark: form.landmark.value.trim(),
+        pincode: form.pincode.value.trim()
+      };
+
+      try {
+        const response = await fetch(scriptURL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        if (result.status === "success") {
+          confirmation.style.display = 'block';
+          form.reset();
+        } else {
+          alert("❌ Error placing order. Please try again.");
+        }
+      } catch (error) {
+        alert("❌ Network error. Please try again.");
+        console.error(error);
+      }
+    });
+  </script>
+</body>
+</html>
